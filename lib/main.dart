@@ -1,24 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'services/firebase_service.dart';
 import 'providers/cart_provider.dart';
 import 'screens/home_screen.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  // Initialize Firebase with sample data if needed
-  try {
-    await FirebaseService.initializeSampleData();
-  } catch (e) {
-    print('Error initializing Firebase data: $e');
-  }
-
+void main() {
   runApp(const MyApp());
 }
 
@@ -32,19 +17,23 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CartProvider()),
       ],
       child: MaterialApp(
-        title: 'Kasir Smart',
+        title: 'Toko Online',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF2563EB),
-            brightness: Brightness.light,
+          brightness: Brightness.dark,
+          scaffoldBackgroundColor: const Color(0xFF0F172A),
+          colorScheme: const ColorScheme.dark(
+            primary: Color(0xFF3B82F6),
+            secondary: Color(0xFF10B981),
+            surface: Color(0xFF1E293B),
+            background: Color(0xFF0F172A),
           ),
           useMaterial3: true,
           appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFF2563EB),
+            backgroundColor: Color(0xFF0F172A),
             foregroundColor: Colors.white,
-            elevation: 4,
-            centerTitle: true,
+            elevation: 0,
+            centerTitle: false,
             titleTextStyle: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
@@ -52,14 +41,13 @@ class MyApp extends StatelessWidget {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2563EB),
+              backgroundColor: const Color(0xFF3B82F6),
               foregroundColor: Colors.white,
-              elevation: 12,
-              shadowColor: const Color(0xFF2563EB).withOpacity(0.5),
+              elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             ),
           ),
           inputDecorationTheme: InputDecorationTheme(
@@ -68,25 +56,25 @@ class MyApp extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFF2563EB), width: 2),
+              borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 2),
             ),
             filled: true,
-            fillColor: const Color(0xFFF8FAFC),
+            fillColor: const Color(0xFF1E293B),
           ),
           textTheme: const TextTheme(
             headlineSmall: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF1E293B),
+              color: Colors.white,
             ),
             titleLarge: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF1E293B),
+              color: Colors.white,
             ),
             bodyLarge: TextStyle(
               fontSize: 16,
-              color: Color(0xFF64748B),
+              color: Color(0xFF94A3B8),
             ),
           ),
         ),
@@ -97,7 +85,7 @@ class MyApp extends StatelessWidget {
         builder: (context, child) {
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(
-              textScaleFactor: 1.0, // Prevent system font scaling
+              textScaler: TextScaler.linear(1.0), // Prevent system font scaling
             ),
             child: child!,
           );

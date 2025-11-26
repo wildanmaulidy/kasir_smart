@@ -18,32 +18,55 @@ class Order {
     required this.dateTime,
   });
 
-  String get formattedDate => '${dateTime.day}/${dateTime.month}/${dateTime.year}';
-  String get formattedTime => '${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
+  String get formattedDate {
+    return '${dateTime.day.toString().padLeft(2, '0')}/'
+           '${dateTime.month.toString().padLeft(2, '0')}/'
+           '${dateTime.year}';
+  }
 
-  // Sample order history
-  static List<Order> sampleOrders = [
-    Order(
-      id: 'ORD001',
-      items: [
-        CartItem(product: Product.sampleProducts[0], quantity: 2),
-        CartItem(product: Product.sampleProducts[2], quantity: 1),
-      ],
-      totalAmount: 55000,
-      customerName: 'John Doe',
-      paymentMethod: 'Tunai',
-      dateTime: DateTime.now().subtract(const Duration(hours: 2)),
-    ),
-    Order(
-      id: 'ORD002',
-      items: [
-        CartItem(product: Product.sampleProducts[3], quantity: 1),
-        CartItem(product: Product.sampleProducts[2], quantity: 3),
-      ],
-      totalAmount: 19000,
-      customerName: 'Jane Smith',
-      paymentMethod: 'Transfer',
-      dateTime: DateTime.now().subtract(const Duration(days: 1)),
-    ),
-  ];
+  String get formattedTime {
+    return '${dateTime.hour.toString().padLeft(2, '0')}:'
+           '${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
+  // Convert to Map for storage
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'items': items.map((item) => {
+        'productId': item.product.id,
+        'productName': item.product.name,
+        'quantity': item.quantity,
+        'price': item.product.price,
+        'totalPrice': item.totalPrice,
+      }).toList(),
+      'totalAmount': totalAmount,
+      'customerName': customerName,
+      'paymentMethod': paymentMethod,
+      'dateTime': dateTime.toIso8601String(),
+    };
+  }
+
+  // Create from Map
+  factory Order.fromMap(Map<String, dynamic> map) {
+    return Order(
+      id: map['id'],
+      items: (map['items'] as List).map((item) => CartItem(
+        product: Product( // We'll need to create a simple product from the data
+          id: item['productId'],
+          name: item['productName'],
+          price: item['price'],
+          category: 'Unknown', // Default category
+          description: '',
+          imageUrl: '', // Default empty image
+          stock: 0, // Default stock
+        ),
+        quantity: item['quantity'],
+      )).toList(),
+      totalAmount: map['totalAmount'],
+      customerName: map['customerName'],
+      paymentMethod: map['paymentMethod'],
+      dateTime: DateTime.parse(map['dateTime']),
+    );
+  }
 }

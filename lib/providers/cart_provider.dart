@@ -2,12 +2,15 @@ import 'package:flutter/foundation.dart';
 import '../models/cart_item.dart';
 import '../models/product.dart';
 import '../models/order.dart';
-import '../services/firebase_service.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartProvider with ChangeNotifier {
   final List<CartItem> _cartItems = [];
+  final List<Order> _orders = [];
 
   List<CartItem> get cartItems => _cartItems;
+  List<Order> get orders => _orders;
 
   int get itemCount => _cartItems.length;
 
@@ -67,18 +70,48 @@ class CartProvider with ChangeNotifier {
     try {
       final order = Order(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        items: _cartItems,
+        items: List.from(_cartItems),
         totalAmount: totalAmount,
         customerName: customerName,
         paymentMethod: paymentMethod,
         dateTime: DateTime.now(),
       );
 
-      final orderId = await FirebaseService.createOrder(order);
+      // Save order
+      await _saveOrder(order);
       clearCart();
-      return orderId;
+      return order.id;
     } catch (e) {
       throw Exception('Failed to process order: $e');
     }
   }
+
+  Future<void> _saveOrder(Order order) async {
+    _orders.add(order);
+    notifyListeners();
+
+    // Save to shared preferences
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final ordersJson = _orders.map((o) => jsonEncode(o.toMap())).toList();
+      await prefs.setStringList('orders', ordersJson);
+    } catch (e) {
+      print('Error saving order: $e');
+    }
+  }
+
+  Future<void> loadOrders() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final ordersJson = prefs.getStringList('orders') ?? [];
+      _orders.clear();
+      _orders.addAll(
+        ordersJson.map((json) => Order.fromMap(jsonDecode(json))).toList(),
+      );
+      notifyListeners();
+    } catch (e) {
+      print('Error loading orders: $e');
+    }
+  }
+
 }

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/product.dart';
 import '../providers/cart_provider.dart';
 import '../widgets/product_card.dart';
-import '../widgets/recommendation_widget.dart';
+import '../widgets/animated_background.dart';
 import 'cart_screen.dart';
 
 class ProductListScreen extends StatefulWidget {
@@ -48,7 +48,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
     final filteredProducts = _getFilteredProducts();
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: const Text('Daftar Produk'),
         actions: [
           Consumer<CartProvider>(
@@ -92,9 +95,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
           ),
         ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          // Search Bar
+          const AnimatedBackground(),
+          Column(
+            children: [
+              // Search Bar
           LayoutBuilder(
             builder: (context, constraints) {
               final screenWidth = constraints.maxWidth;
@@ -201,9 +207,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
             },
           ),
 
-          // AI Recommendations
-          const AIRecommendationsWidget(),
-
           // Products Grid
           Expanded(
             child: LayoutBuilder(
@@ -284,6 +287,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     );
               },
             ),
+          ),
+            ],
           ),
         ],
       ),

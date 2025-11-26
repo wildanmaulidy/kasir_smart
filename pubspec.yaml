@@ -1,5 +1,5 @@
-name: kasir_smart
-description: "A new Flutter project."
+name: toko_online
+description: "Aplikasi toko online dengan fitur keranjang belanja dan pembayaran digital."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -35,12 +35,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   provider: ^6.1.2
-
-  # Firebase
-  firebase_core: ^3.1.0
-  cloud_firestore: ^5.0.0
-  firebase_auth: ^5.1.0
-  firebase_storage: ^12.0.0
+  url_launcher: ^6.2.6
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

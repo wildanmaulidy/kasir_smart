@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../widgets/cart_item_card.dart';
+import '../widgets/animated_background.dart';
 import 'checkout_screen.dart';
 
 class CartScreen extends StatelessWidget {
@@ -10,10 +11,16 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: const Text('Keranjang Belanja'),
       ),
-      body: Consumer<CartProvider>(
+      body: Stack(
+        children: [
+          const AnimatedBackground(),
+          Consumer<CartProvider>(
         builder: (context, cart, child) {
           if (cart.cartItems.isEmpty) {
             return const Center(
@@ -119,6 +126,8 @@ class CartScreen extends StatelessWidget {
             ],
           );
         },
+          ),
+        ],
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
-import '../models/order.dart';
+import '../widgets/animated_background.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -31,16 +31,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           _paymentMethodController.text,
         );
 
-        // Create order for receipt display
-        final order = Order(
-          id: orderId,
-          items: List.from(cart.cartItems),
-          totalAmount: cart.totalAmount,
-          customerName: _customerNameController.text,
-          paymentMethod: _paymentMethodController.text,
-          dateTime: DateTime.now(),
-        );
-
         // Show receipt dialog
         if (mounted) {
           showDialog(
@@ -62,14 +52,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ),
                     ),
                     const Divider(),
-                    Text('Order ID: ${order.id}'),
-                    Text('Tanggal: ${order.formattedDate} ${order.formattedTime}'),
-                    Text('Pelanggan: ${order.customerName}'),
-                    Text('Pembayaran: ${order.paymentMethod}'),
+                    Text('Order ID: $orderId'),
+                    Text('Tanggal: ${DateTime.now().day.toString().padLeft(2, '0')}/${DateTime.now().month.toString().padLeft(2, '0')}/${DateTime.now().year}'),
+                    Text('Waktu: ${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')}'),
+                    Text('Pelanggan: ${_customerNameController.text}'),
+                    Text('Pembayaran: ${_paymentMethodController.text}'),
                     const Divider(),
                     const Text('Detail Pesanan:', style: TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
-                    ...order.items.map((item) => Padding(
+                    ...cart.cartItems.map((item) => Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -87,7 +78,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       children: [
                         const Text('TOTAL:', style: TextStyle(fontWeight: FontWeight.bold)),
                         Text(
-                          'Rp ${order.totalAmount.toStringAsFixed(0)}',
+                          'Rp ${cart.totalAmount.toStringAsFixed(0)}',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -109,24 +100,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Navigator.of(context).popUntil((route) => route.isFirst); // Go back to home
                   },
                   child: const Text('Selesai'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Close receipt dialog
-                    // Simulate printing
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('🖨️ Struk berhasil disimpan ke Firebase!'),
-                        backgroundColor: Colors.green,
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                    // Then close and go back to home
-                    Future.delayed(const Duration(seconds: 2), () {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                    });
-                  },
-                  child: const Text('OK'),
                 ),
               ],
             ),
@@ -158,10 +131,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final cart = context.watch<CartProvider>();
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: const Text('Checkout'),
       ),
-      body: SingleChildScrollView(
+      body: Stack(
+        children: [
+          const AnimatedBackground(),
+          SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
@@ -248,6 +227,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ],
           ),
         ),
+          ),
+        ],
       ),
     );
   }
