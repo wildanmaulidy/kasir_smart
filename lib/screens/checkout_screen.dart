@@ -22,129 +22,134 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     super.dispose();
   }
 
-  void _processPayment() {
+  void _processPayment() async {
     if (_formKey.currentState!.validate()) {
-      final cart = context.read<CartProvider>();
-      final total = cart.totalAmount;
+      try {
+        final cart = context.read<CartProvider>();
+        final orderId = await cart.checkout(
+          _customerNameController.text,
+          _paymentMethodController.text,
+        );
 
-      // Create order
-      final orderId = 'ORD${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}';
-      final order = Order(
-        id: orderId,
-        items: List.from(cart.cartItems), // Copy cart items
-        totalAmount: total,
-        customerName: _customerNameController.text,
-        paymentMethod: _paymentMethodController.text,
-        dateTime: DateTime.now(),
-      );
+        // Create order for receipt display
+        final order = Order(
+          id: orderId,
+          items: List.from(cart.cartItems),
+          totalAmount: cart.totalAmount,
+          customerName: _customerNameController.text,
+          paymentMethod: _paymentMethodController.text,
+          dateTime: DateTime.now(),
+        );
 
-      // Add to sample orders (in a real app, this would be saved to database)
-      Order.sampleOrders.insert(0, order);
-
-      // Show receipt dialog
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('🧾 Struk Pembayaran'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text(
-                    'KASIR SMART',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                const Divider(),
-                Text('Order ID: ${order.id}'),
-                Text('Tanggal: ${order.formattedDate} ${order.formattedTime}'),
-                Text('Pelanggan: ${order.customerName}'),
-                Text('Pembayaran: ${order.paymentMethod}'),
-                const Divider(),
-                const Text('Detail Pesanan:', style: TextStyle(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 8),
-                ...order.items.map((item) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text('${item.quantity}x ${item.product.name}'),
-                      ),
-                      Text('Rp ${item.totalPrice.toStringAsFixed(0)}'),
-                    ],
-                  ),
-                )),
-                const Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // Show receipt dialog
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('🧾 Struk Pembayaran'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('TOTAL:', style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(
-                      'Rp ${order.totalAmount.toStringAsFixed(0)}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    Center(
+                      child: Text(
+                        'KASIR SMART',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    const Divider(),
+                    Text('Order ID: ${order.id}'),
+                    Text('Tanggal: ${order.formattedDate} ${order.formattedTime}'),
+                    Text('Pelanggan: ${order.customerName}'),
+                    Text('Pembayaran: ${order.paymentMethod}'),
+                    const Divider(),
+                    const Text('Detail Pesanan:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    ...order.items.map((item) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text('${item.quantity}x ${item.product.name}'),
+                          ),
+                          Text('Rp ${item.totalPrice.toStringAsFixed(0)}'),
+                        ],
+                      ),
+                    )),
+                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('TOTAL:', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(
+                          'Rp ${order.totalAmount.toStringAsFixed(0)}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Center(
+                      child: Text(
+                        'Terima Kasih Atas Kunjungannya!',
+                        style: TextStyle(fontStyle: FontStyle.italic),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                const Center(
-                  child: Text(
-                    'Terima Kasih Atas Kunjungannya!',
-                    style: TextStyle(fontStyle: FontStyle.italic),
-                  ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close dialog
+                    Navigator.of(context).popUntil((route) => route.isFirst); // Go back to home
+                  },
+                  child: const Text('Selesai'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close receipt dialog
+                    // Simulate printing
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('🖨️ Struk berhasil disimpan ke Firebase!'),
+                        backgroundColor: Colors.green,
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                    // Then close and go back to home
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    });
+                  },
+                  child: const Text('OK'),
                 ),
               ],
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
-                cart.clearCart(); // Clear cart
-                Navigator.of(context).popUntil((route) => route.isFirst); // Go back to home
-
-                // Show success snackbar
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('✅ Pembayaran berhasil! Struk telah dicetak.'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              },
-              child: const Text('Selesai'),
+          );
+        }
+      } catch (e) {
+        // Show error dialog
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Error'),
+              content: Text('Gagal memproses pembayaran: $e'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close receipt dialog
-                // Simulate printing
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('🖨️ Struk sedang dicetak...'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-                // Then close and clear cart
-                Future.delayed(const Duration(seconds: 2), () {
-                  cart.clearCart();
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('✅ Pembayaran berhasil!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                });
-              },
-              child: const Text('Cetak Struk'),
-            ),
-          ],
-        ),
-      );
+          );
+        }
+      }
     }
   }
 

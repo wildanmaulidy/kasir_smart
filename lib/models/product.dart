@@ -69,7 +69,7 @@ class Product {
       name: 'Rendang',
       description: 'Rendang daging sapi khas Padang',
       price: 45000,
-      imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1625398407796-92d9bfba3e0f?w=400&h=300&fit=crop',
       stock: 6,
       category: 'Makanan Utama',
     ),

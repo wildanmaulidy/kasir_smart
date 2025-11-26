@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import '../models/cart_item.dart';
 import '../models/product.dart';
+import '../models/order.dart';
+import '../services/firebase_service.dart';
 
 class CartProvider with ChangeNotifier {
   final List<CartItem> _cartItems = [];
@@ -59,5 +61,24 @@ class CartProvider with ChangeNotifier {
   void clearCart() {
     _cartItems.clear();
     notifyListeners();
+  }
+
+  Future<String> checkout(String customerName, String paymentMethod) async {
+    try {
+      final order = Order(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        items: _cartItems,
+        totalAmount: totalAmount,
+        customerName: customerName,
+        paymentMethod: paymentMethod,
+        dateTime: DateTime.now(),
+      );
+
+      final orderId = await FirebaseService.createOrder(order);
+      clearCart();
+      return orderId;
+    } catch (e) {
+      throw Exception('Failed to process order: $e');
+    }
   }
 }
