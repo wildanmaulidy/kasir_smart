@@ -19,16 +19,35 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Kasir Smart',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF2563EB),
+            brightness: Brightness.light,
+          ),
           useMaterial3: true,
           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.blue,
+            backgroundColor: Color(0xFF2563EB),
             foregroundColor: Colors.white,
+            elevation: 4,
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
+              backgroundColor: const Color(0xFF2563EB),
               foregroundColor: Colors.white,
+              elevation: 4,
+              shadowColor: const Color(0xFF2563EB).withOpacity(0.3),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF2563EB), width: 2),
             ),
           ),
         ),

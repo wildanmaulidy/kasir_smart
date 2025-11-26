@@ -20,12 +20,11 @@ class CartItemCard extends StatelessWidget {
               width: 60,
               height: 60,
               decoration: BoxDecoration(
-                color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.fastfood,
-                color: Colors.grey,
+                image: DecorationImage(
+                  image: NetworkImage(cartItem.product.imageUrl),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             const SizedBox(width: 16),
