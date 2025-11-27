@@ -11,6 +11,7 @@ import '../screens/warranty_screen.dart';
 import '../screens/help_screen.dart';
 import '../models/product.dart';
 import '../widgets/animated_background.dart';
+import '../widgets/recommendation_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -40,25 +41,37 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Hero Banner
                   _buildHeroBanner(),
 
+                  const SizedBox(height: 16),
+
                   // Quick Actions
                   _buildQuickActions(),
+
+                  const SizedBox(height: 12),
 
                   // Search Bar
                   _buildSearchBar(),
 
+                  const SizedBox(height: 12),
+
                   // Statistics Section
                   _buildStatisticsSection(),
+
+                  const SizedBox(height: 12),
 
                   // Featured Categories
                   _buildFeaturedCategories(),
 
-                  // Featured Products
-                  _buildFeaturedProducts(),
+                  const SizedBox(height: 12),
+
+                  // AI Recommendations
+                  const RecommendationWidget(),
+
+                  const SizedBox(height: 12),
 
                   // Special Offers
                   _buildSpecialOffers(),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -69,8 +82,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHeader() {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final padding = screenWidth < 400 ? 12.0 : 16.0; // Smaller padding for more compact design
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(padding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -179,9 +194,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHeroBanner() {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final bannerHeight = screenWidth < 400 ? 140.0 : 160.0; // Smaller height for more compact design
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      height: 180,
+      margin: EdgeInsets.symmetric(horizontal: screenWidth < 400 ? 16 : 20),
+      height: bannerHeight,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
@@ -275,8 +292,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildQuickActions() {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final padding = screenWidth < 400 ? 12.0 : 16.0;
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(padding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -335,13 +354,16 @@ class _HomeScreenState extends State<HomeScreen> {
     required Color color,
     required VoidCallback onTap,
   }) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final buttonSize = screenWidth < 400 ? 50.0 : 60.0; // Smaller buttons for small screens
+    final iconSize = screenWidth < 400 ? 24.0 : 28.0;
     return GestureDetector(
       onTap: onTap,
       child: Column(
         children: [
           Container(
-            width: 60,
-            height: 60,
+            width: buttonSize,
+            height: buttonSize,
             decoration: BoxDecoration(
               color: color.withOpacity(0.2),
               borderRadius: BorderRadius.circular(16),
@@ -353,7 +375,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Icon(
               icon,
               color: color,
-              size: 28,
+              size: iconSize,
             ),
           ),
           const SizedBox(height: 8),
@@ -372,8 +394,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSearchBar() {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final horizontalPadding = screenWidth < 400 ? 12.0 : 16.0;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
         decoration: BoxDecoration(
@@ -414,8 +438,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildStatisticsSection() {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final padding = screenWidth < 400 ? 12.0 : 16.0;
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(padding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -467,8 +493,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildFeaturedCategories() {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final horizontalPadding = screenWidth < 400 ? 12.0 : 16.0;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -499,7 +527,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 16),
           SizedBox(
-            height: 120,
+            height: screenWidth < 400 ? 80.0 : 100.0,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
@@ -517,9 +545,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildCategoryCard(String title, IconData icon, Color color, String imagePath) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardWidth = screenWidth < 400 ? 80.0 : 100.0;
+    final cardHeight = screenWidth < 400 ? 80.0 : 100.0;
+    final iconSize = screenWidth < 400 ? 28.0 : 32.0;
+    final marginRight = screenWidth < 400 ? 12.0 : 16.0;
     return Container(
-      width: 100,
-      margin: const EdgeInsets.only(right: 16),
+      width: cardWidth,
+      margin: EdgeInsets.only(right: marginRight),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
@@ -530,8 +563,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             Container(
-              width: 80,
-              height: 80,
+              width: cardHeight,
+              height: cardHeight,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [color.withOpacity(0.8), color],
@@ -550,19 +583,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Icon(
                 icon,
                 color: Colors.white,
-                size: 32,
+                size: iconSize,
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
             ),
           ],
         ),
@@ -570,88 +592,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildFeaturedProducts() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Produk Unggulan',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ProductListScreen()),
-                  );
-                },
-                child: const Text(
-                  'Lihat Semua',
-                  style: TextStyle(color: Color(0xFF3B82F6)),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              // Responsive grid layout for home screen featured products
-              final screenWidth = constraints.maxWidth;
-              int crossAxisCount;
-              double childAspectRatio;
-
-              if (screenWidth >= 1200) {
-                // Large screens (desktop)
-                crossAxisCount = 4;
-                childAspectRatio = 0.75;
-              } else if (screenWidth >= 800) {
-                // Medium screens (tablet)
-                crossAxisCount = 3;
-                childAspectRatio = 0.7;
-              } else if (screenWidth >= 600) {
-                // Small tablets
-                crossAxisCount = 2;
-                childAspectRatio = 0.75;
-              } else if (screenWidth >= 400) {
-                // Mobile phones (medium)
-                crossAxisCount = 2;
-                childAspectRatio = 0.7;
-              } else {
-                // Small mobile phones
-                crossAxisCount = 1;
-                childAspectRatio = 0.8;
-              }
-
-              return GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: screenWidth < 400 ? 12 : 16,
-                  mainAxisSpacing: screenWidth < 400 ? 12 : 16,
-                  childAspectRatio: childAspectRatio,
-                ),
-                itemCount: Product.sampleProducts.take(4).length,
-                itemBuilder: (context, index) {
-                  final product = Product.sampleProducts[index];
-                  return _buildEnhancedProductCard(context, product);
-                },
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildEnhancedProductCard(BuildContext context, Product product) {
     return LayoutBuilder(
@@ -805,9 +745,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSpecialOffers() {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final horizontalMargin = screenWidth < 400 ? 12.0 : 16.0;
+    final padding = screenWidth < 400 ? 16.0 : 20.0;
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(24),
+      margin: EdgeInsets.symmetric(horizontal: horizontalMargin),
+      padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFFFF6B6B), Color(0xFFEE5A24)],
@@ -886,16 +829,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Container(
-            width: 100,
-            height: 100,
+            width: screenWidth < 400 ? 80 : 100,
+            height: screenWidth < 400 ? 80 : 100,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.local_offer,
               color: Colors.white,
-              size: 50,
+              size: screenWidth < 400 ? 40 : 50,
             ),
           ),
         ],

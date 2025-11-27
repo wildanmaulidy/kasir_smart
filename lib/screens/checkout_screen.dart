@@ -332,7 +332,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         children: [
           const AnimatedBackground(),
           SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width < 400 ? 12 : 16),
             child: Form(
               key: _formKey,
               child: Column(
@@ -346,23 +346,49 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  ...cart.cartItems.map((item) => ListTile(
-                        title: Text(item.product.name),
-                        subtitle: Text('${item.quantity} x ${currencyFormat.format(item.product.price)}'),
-                        trailing: Text(currencyFormat.format(item.totalPrice)),
-                      )),
-                  const Divider(),
-                  ListTile(
-                    title: const Text(
-                      'Total',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    trailing: Text(
-                      currencyFormat.format(cart.totalAmount),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                  // Product list with constrained height for Android compatibility
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.3, // 30% of screen height
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: cart.cartItems.map((item) => ListTile(
+                          dense: true, // Make ListTile more compact
+                          title: Text(item.product.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                          subtitle: Text('${item.quantity} x ${currencyFormat.format(item.product.price)}', style: const TextStyle(fontSize: 14)),
+                          trailing: Text(currencyFormat.format(item.totalPrice), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                        )).toList(),
                       ),
+                    ),
+                  ),
+                  const Divider(),
+                  // Prominent Total Display
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'TOTAL PEMBAYARAN:',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.green,
+                          ),
+                        ),
+                        Text(
+                          currencyFormat.format(cart.totalAmount),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -418,7 +444,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     child: ElevatedButton(
                       onPressed: _processPayment,
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width < 400 ? 14 : 16),
                       ),
                       child: const Text(
                         'Proses Pembayaran',
