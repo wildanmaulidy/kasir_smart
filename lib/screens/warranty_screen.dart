@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../models/product.dart';
 import '../providers/cart_provider.dart';
 import '../widgets/animated_background.dart';
+import '../screens/checkout_screen.dart';
 
 class WarrantyScreen extends StatelessWidget {
   const WarrantyScreen({super.key});
+
+  static final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +20,7 @@ class WarrantyScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        iconTheme: const IconThemeData(color: Color(0xFF45B7D1)),
         title: const Text(
           '🛡️ Produk Bergaransi',
           style: TextStyle(
@@ -274,8 +279,8 @@ class WarrantyScreen extends StatelessWidget {
                       // Price Section
                       Text(
                         product.isOnFlashSale
-                            ? 'Rp ${product.discountedPrice.toStringAsFixed(0)}'
-                            : 'Rp ${product.price.toStringAsFixed(0)}',
+                            ? currencyFormat.format(product.discountedPrice)
+                            : currencyFormat.format(product.price),
                         style: const TextStyle(
                           color: Color(0xFF45B7D1),
                           fontSize: 16,
@@ -284,7 +289,7 @@ class WarrantyScreen extends StatelessWidget {
                       ),
                       if (product.isOnFlashSale)
                         Text(
-                          'Rp ${product.price.toStringAsFixed(0)}',
+                          currencyFormat.format(product.price),
                           style: TextStyle(
                             color: Colors.grey[500],
                             fontSize: 12,
@@ -323,32 +328,66 @@ class WarrantyScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      // Add to Cart Button
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            context.read<CartProvider>().addToCart(product);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('${product.name} (Bergaransi) ditambahkan ke keranjang'),
+                      Row(
+                        children: [
+                          // Add to Cart Button
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                context.read<CartProvider>().addToCart(product);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('${product.name} (Bergaransi) ditambahkan ke keranjang'),
+                                    backgroundColor: const Color(0xFF45B7D1),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF45B7D1),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF45B7D1),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              child: const Text(
+                                'Keranjang',
+                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
-                          child: const Text(
-                            'Beli Sekarang',
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                          const SizedBox(width: 6),
+                          // Buy Now Button
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // Create temporary cart with just this product
+                                final cartProvider = context.read<CartProvider>();
+                                cartProvider.clearCart(); // Clear existing cart
+                                cartProvider.addToCart(product);
+                                // Navigate to checkout
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const CheckoutScreen(),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF10B981),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: const Text(
+                                'Beli Sekarang',
+                                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),

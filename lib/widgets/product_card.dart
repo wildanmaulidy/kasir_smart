@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../models/product.dart';
 import '../providers/cart_provider.dart';
+import '../screens/checkout_screen.dart';
 
 class ProductCard extends StatefulWidget {
   final Product product;
@@ -13,6 +15,8 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin {
+  final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
   late AnimationController _bounceController;
@@ -244,7 +248,7 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Rp ${widget.product.price.toStringAsFixed(0)}',
+                                      currencyFormat.format(widget.product.price),
                                       style: TextStyle(
                                         color: const Color(0xFF3B82F6),
                                         fontWeight: FontWeight.bold,
@@ -280,67 +284,137 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                                   ],
                                 ),
                                 SizedBox(height: isSmallCard ? 8 : 12),
-                                Container(
-                                  width: double.infinity,
-                                  height: isSmallCard ? 32 : 36,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: widget.product.stock > 0
-                                          ? [const Color(0xFFFF6B6B), const Color(0xFFEE5A24)]
-                                          : [Colors.grey, Colors.grey[400]!],
-                                    ),
-                                    borderRadius: BorderRadius.circular(12),
-                                    boxShadow: widget.product.stock > 0
-                                        ? [
-                                            BoxShadow(
-                                              color: const Color(0xFFFF6B6B).withOpacity(0.3),
-                                              blurRadius: 8,
-                                              offset: const Offset(0, 4),
-                                            ),
-                                          ]
-                                        : null,
-                                  ),
-                                  child: ElevatedButton(
-                                    onPressed: widget.product.stock > 0
-                                        ? () {
-                                            _bounceController.forward(from: 0.0);
-                                            context.read<CartProvider>().addToCart(widget.product);
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text('${widget.product.name} ditambahkan ke keranjang'),
-                                                backgroundColor: const Color(0xFFFF6B6B),
-                                                duration: const Duration(seconds: 2),
-                                                behavior: SnackBarBehavior.floating,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        : null,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.transparent,
-                                      shadowColor: Colors.transparent,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    child: AnimatedBuilder(
-                                      animation: _bounceAnimation,
-                                      builder: (context, child) {
-                                        return Transform.scale(
-                                          scale: _bounceAnimation.value,
-                                          child: Text(
-                                            widget.product.stock > 0 ? 'Tambah' : 'Habis',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: isSmallCard ? 13 : 14,
+                                Row(
+                                  children: [
+                                    // Add to Cart Button
+                                    Expanded(
+                                      child: Container(
+                                        height: isSmallCard ? 32 : 36,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: widget.product.stock > 0
+                                                ? [const Color(0xFFFF6B6B), const Color(0xFFEE5A24)]
+                                                : [Colors.grey, Colors.grey[400]!],
+                                          ),
+                                          borderRadius: BorderRadius.circular(12),
+                                          boxShadow: widget.product.stock > 0
+                                              ? [
+                                                  BoxShadow(
+                                                    color: const Color(0xFFFF6B6B).withOpacity(0.3),
+                                                    blurRadius: 8,
+                                                    offset: const Offset(0, 4),
+                                                  ),
+                                                ]
+                                              : null,
+                                        ),
+                                        child: ElevatedButton(
+                                          onPressed: widget.product.stock > 0
+                                              ? () {
+                                                  _bounceController.forward(from: 0.0);
+                                                  context.read<CartProvider>().addToCart(widget.product);
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text('${widget.product.name} ditambahkan ke keranjang'),
+                                                      backgroundColor: const Color(0xFFFF6B6B),
+                                                      duration: const Duration(seconds: 2),
+                                                      behavior: SnackBarBehavior.floating,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              : null,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.transparent,
+                                            shadowColor: Colors.transparent,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
                                             ),
                                           ),
-                                        );
-                                      },
+                                          child: AnimatedBuilder(
+                                            animation: _bounceAnimation,
+                                            builder: (context, child) {
+                                              return Transform.scale(
+                                                scale: _bounceAnimation.value,
+                                                child: Text(
+                                                  widget.product.stock > 0 ? 'Keranjang' : 'Habis',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: isSmallCard ? 11 : 12,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    SizedBox(width: isSmallCard ? 6 : 8),
+                                    // Buy Now Button
+                                    Expanded(
+                                      child: Container(
+                                        height: isSmallCard ? 32 : 36,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: widget.product.stock > 0
+                                                ? [const Color(0xFF10B981), const Color(0xFF059669)]
+                                                : [Colors.grey, Colors.grey[400]!],
+                                          ),
+                                          borderRadius: BorderRadius.circular(12),
+                                          boxShadow: widget.product.stock > 0
+                                              ? [
+                                                  BoxShadow(
+                                                    color: const Color(0xFF10B981).withOpacity(0.3),
+                                                    blurRadius: 8,
+                                                    offset: const Offset(0, 4),
+                                                  ),
+                                                ]
+                                              : null,
+                                        ),
+                                        child: ElevatedButton(
+                                          onPressed: widget.product.stock > 0
+                                              ? () {
+                                                  _bounceController.forward(from: 0.0);
+                                                  // Create temporary cart with just this product
+                                                  final cartProvider = context.read<CartProvider>();
+                                                  cartProvider.clearCart(); // Clear existing cart
+                                                  cartProvider.addToCart(widget.product);
+                                                  // Navigate to checkout
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => const CheckoutScreen(),
+                                                    ),
+                                                  );
+                                                }
+                                              : null,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.transparent,
+                                            shadowColor: Colors.transparent,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          child: AnimatedBuilder(
+                                            animation: _bounceAnimation,
+                                            builder: (context, child) {
+                                              return Transform.scale(
+                                                scale: _bounceAnimation.value,
+                                                child: Text(
+                                                  widget.product.stock > 0 ? 'Beli Sekarang' : 'Habis',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: isSmallCard ? 10 : 11,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

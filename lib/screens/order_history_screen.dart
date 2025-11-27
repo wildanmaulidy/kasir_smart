@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../models/order.dart';
 import '../providers/cart_provider.dart';
 import '../widgets/animated_background.dart';
@@ -12,6 +13,7 @@ class OrderHistoryScreen extends StatefulWidget {
 }
 
 class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
+  final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
   @override
   void initState() {
     super.initState();
@@ -28,6 +30,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.indigoAccent),
         title: const Text('Riwayat Pembelian'),
       ),
       body: Stack(
@@ -138,7 +141,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                   ),
                                 ),
                                 Text(
-                                  'Rp ${order.totalAmount.toStringAsFixed(0)}',
+                                  currencyFormat.format(order.totalAmount),
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -206,7 +209,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       Expanded(
                         child: Text('${item.quantity}x ${item.product.name}'),
                       ),
-                      Text('Rp ${item.totalPrice.toStringAsFixed(0)}'),
+                      Text(currencyFormat.format(item.totalPrice)),
                     ],
                   ),
                 )),
@@ -216,7 +219,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 children: [
                   const Text('TOTAL:', style: TextStyle(fontWeight: FontWeight.bold)),
                   Text(
-                    'Rp ${order.totalAmount.toStringAsFixed(0)}',
+                    currencyFormat.format(order.totalAmount),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

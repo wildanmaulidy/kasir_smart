@@ -12,6 +12,7 @@ class HelpScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        iconTheme: const IconThemeData(color: Color(0xFFF9CA24)),
         title: const Text(
           '💬 Bantuan & Dukungan',
           style: TextStyle(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../models/cart_item.dart';
 import '../providers/cart_provider.dart';
 
@@ -7,6 +8,8 @@ class CartItemCard extends StatelessWidget {
   final CartItem cartItem;
 
   const CartItemCard({super.key, required this.cartItem});
+
+  static final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +44,7 @@ class CartItemCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Rp ${cartItem.product.price.toStringAsFixed(0)}',
+                    currencyFormat.format(cartItem.product.price),
                     style: const TextStyle(
                       color: Colors.green,
                     ),
@@ -76,7 +79,7 @@ class CartItemCard extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  'Rp ${cartItem.totalPrice.toStringAsFixed(0)}',
+                  currencyFormat.format(cartItem.totalPrice),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),

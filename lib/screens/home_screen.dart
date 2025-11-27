@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../providers/cart_provider.dart';
 import '../screens/product_list_screen.dart';
 import '../screens/cart_screen.dart';
@@ -19,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -600,19 +602,50 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: Product.sampleProducts.take(4).length,
-            itemBuilder: (context, index) {
-              final product = Product.sampleProducts[index];
-              return _buildEnhancedProductCard(context, product);
+          LayoutBuilder(
+            builder: (context, constraints) {
+              // Responsive grid layout for home screen featured products
+              final screenWidth = constraints.maxWidth;
+              int crossAxisCount;
+              double childAspectRatio;
+
+              if (screenWidth >= 1200) {
+                // Large screens (desktop)
+                crossAxisCount = 4;
+                childAspectRatio = 0.75;
+              } else if (screenWidth >= 800) {
+                // Medium screens (tablet)
+                crossAxisCount = 3;
+                childAspectRatio = 0.7;
+              } else if (screenWidth >= 600) {
+                // Small tablets
+                crossAxisCount = 2;
+                childAspectRatio = 0.75;
+              } else if (screenWidth >= 400) {
+                // Mobile phones (medium)
+                crossAxisCount = 2;
+                childAspectRatio = 0.7;
+              } else {
+                // Small mobile phones
+                crossAxisCount = 1;
+                childAspectRatio = 0.8;
+              }
+
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: screenWidth < 400 ? 12 : 16,
+                  mainAxisSpacing: screenWidth < 400 ? 12 : 16,
+                  childAspectRatio: childAspectRatio,
+                ),
+                itemCount: Product.sampleProducts.take(4).length,
+                itemBuilder: (context, index) {
+                  final product = Product.sampleProducts[index];
+                  return _buildEnhancedProductCard(context, product);
+                },
+              );
             },
           ),
         ],
@@ -621,146 +654,153 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildEnhancedProductCard(BuildContext context, Product product) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ProductListScreen()),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF1E293B),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final cardWidth = constraints.maxWidth;
+        final isSmallCard = cardWidth < 160;
+
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProductListScreen()),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E293B),
+              borderRadius: BorderRadius.circular(isSmallCard ? 12 : 16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: isSmallCard ? 6 : 8,
+                  offset: Offset(0, isSmallCard ? 3 : 4),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Product Image with Gradient Overlay
-            Stack(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: 140,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16),
+                // Product Image with Gradient Overlay
+                Stack(
+                  children: [
+                    Container(
+                      height: isSmallCard ? 100 : 140,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(isSmallCard ? 12 : 16),
+                          topRight: Radius.circular(isSmallCard ? 12 : 16),
+                        ),
+                        image: DecorationImage(
+                          image: NetworkImage(product.imageUrl),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                    image: DecorationImage(
-                      image: NetworkImage(product.imageUrl),
-                      fit: BoxFit.cover,
+                    Container(
+                      height: isSmallCard ? 100 : 140,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(isSmallCard ? 12 : 16),
+                          topRight: Radius.circular(isSmallCard ? 12 : 16),
+                        ),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.3),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    Positioned(
+                      top: isSmallCard ? 6 : 8,
+                      right: isSmallCard ? 6 : 8,
+                      child: Container(
+                        padding: EdgeInsets.all(isSmallCard ? 4 : 6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF3B82F6),
+                          borderRadius: BorderRadius.circular(isSmallCard ? 16 : 20),
+                        ),
+                        child: Icon(
+                          Icons.favorite_border,
+                          color: Colors.white,
+                          size: isSmallCard ? 12 : 16,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Container(
-                  height: 140,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16),
-                    ),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.3),
-                      ],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF3B82F6),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Icon(
-                      Icons.favorite_border,
-                      color: Colors.white,
-                      size: 16,
-                    ),
+                Padding(
+                  padding: EdgeInsets.all(isSmallCard ? 8 : 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: isSmallCard ? 12 : 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: isSmallCard ? 2 : 4),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: const Color(0xFFF59E0B),
+                            size: isSmallCard ? 14 : 16,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '4.${product.id}',
+                            style: TextStyle(
+                              color: const Color(0xFF94A3B8),
+                              fontSize: isSmallCard ? 10 : 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: isSmallCard ? 6 : 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            currencyFormat.format(product.price),
+                            style: TextStyle(
+                              color: const Color(0xFF3B82F6),
+                              fontSize: isSmallCard ? 14 : 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(isSmallCard ? 6 : 8),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                              ),
+                              borderRadius: BorderRadius.circular(isSmallCard ? 6 : 8),
+                            ),
+                            child: Icon(
+                              Icons.add_shopping_cart,
+                              color: Colors.white,
+                              size: isSmallCard ? 14 : 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.star,
-                        color: Color(0xFFF59E0B),
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '4.${product.id}',
-                        style: const TextStyle(
-                          color: Color(0xFF94A3B8),
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Rp ${product.price.toStringAsFixed(0)}',
-                        style: const TextStyle(
-                          color: Color(0xFF3B82F6),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(
-                          Icons.add_shopping_cart,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

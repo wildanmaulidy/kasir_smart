@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../models/product.dart';
 import '../providers/cart_provider.dart';
 import '../widgets/animated_background.dart';
+import '../screens/checkout_screen.dart';
 
 class FlashSaleScreen extends StatefulWidget {
   const FlashSaleScreen({super.key});
@@ -13,6 +15,8 @@ class FlashSaleScreen extends StatefulWidget {
 
 class _FlashSaleScreenState extends State<FlashSaleScreen>
     with TickerProviderStateMixin {
+  final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+
   late AnimationController _timerController;
   late Animation<double> _timerAnimation;
   int _remainingTime = 3600; // 1 hour in seconds
@@ -67,6 +71,7 @@ class _FlashSaleScreenState extends State<FlashSaleScreen>
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        iconTheme: const IconThemeData(color: Color(0xFFFF6B6B)),
         title: const Text(
           '⚡ Flash Sale',
           style: TextStyle(
@@ -357,7 +362,7 @@ class _FlashSaleScreenState extends State<FlashSaleScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Rp ${product.discountedPrice.toStringAsFixed(0)}',
+                            currencyFormat.format(product.discountedPrice),
                             style: const TextStyle(
                               color: Color(0xFFFF6B6B),
                               fontSize: 16,
@@ -365,7 +370,7 @@ class _FlashSaleScreenState extends State<FlashSaleScreen>
                             ),
                           ),
                           Text(
-                            'Rp ${product.price.toStringAsFixed(0)}',
+                            currencyFormat.format(product.price),
                             style: TextStyle(
                               color: Colors.grey[500],
                               fontSize: 12,
@@ -375,32 +380,66 @@ class _FlashSaleScreenState extends State<FlashSaleScreen>
                         ],
                       ),
                       const SizedBox(height: 8),
-                      // Add to Cart Button
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            context.read<CartProvider>().addToCart(product);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('${product.name} (${product.discountPercentage}% OFF) ditambahkan ke keranjang'),
+                      Row(
+                        children: [
+                          // Add to Cart Button
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                context.read<CartProvider>().addToCart(product);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('${product.name} (${product.discountPercentage}% OFF) ditambahkan ke keranjang'),
+                                    backgroundColor: const Color(0xFFFF6B6B),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFFFF6B6B),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFF6B6B),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              child: const Text(
+                                'Keranjang',
+                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
-                          child: const Text(
-                            'Beli Sekarang',
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                          const SizedBox(width: 6),
+                          // Buy Now Button
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // Create temporary cart with just this product
+                                final cartProvider = context.read<CartProvider>();
+                                cartProvider.clearCart(); // Clear existing cart
+                                cartProvider.addToCart(product);
+                                // Navigate to checkout
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const CheckoutScreen(),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF10B981),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: const Text(
+                                'Beli Sekarang',
+                                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),

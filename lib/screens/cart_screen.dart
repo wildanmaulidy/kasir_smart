@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../providers/cart_provider.dart';
 import '../widgets/cart_item_card.dart';
 import '../widgets/animated_background.dart';
@@ -7,6 +8,8 @@ import 'checkout_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
+
+  static final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +93,7 @@ class CartScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Rp ${cart.totalAmount.toStringAsFixed(0)}',
+                          currencyFormat.format(cart.totalAmount),
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
