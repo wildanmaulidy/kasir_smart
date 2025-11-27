@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../models/product.dart';
 import '../providers/cart_provider.dart';
 import '../widgets/product_card.dart';
-import '../widgets/animated_background.dart';
 import 'cart_screen.dart';
 
 class ProductListScreen extends StatefulWidget {
@@ -48,11 +47,15 @@ class _ProductListScreenState extends State<ProductListScreen> {
     final filteredProducts = _getFilteredProducts();
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: const Color(0xFF0F172A),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Daftar Produk'),
+        title: const Text(
+          'Daftar Produk',
+          style: TextStyle(color: Colors.white),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           Consumer<CartProvider>(
             builder: (context, cart, child) => Stack(
@@ -95,10 +98,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          const AnimatedBackground(),
-          Column(
+      body: Column(
             children: [
               // Search Bar
           LayoutBuilder(
@@ -107,25 +107,30 @@ class _ProductListScreenState extends State<ProductListScreen> {
               return Container(
                 padding: EdgeInsets.all(screenWidth < 400 ? 12 : 16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFF1E293B),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(0.2),
                       blurRadius: 10,
-                      offset: const Offset(0, 2),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
                 child: TextField(
                   controller: _searchController,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: screenWidth < 400 ? 14 : 16,
+                  ),
                   decoration: InputDecoration(
                     hintText: 'Cari produk...',
                     hintStyle: TextStyle(
+                      color: const Color(0xFF94A3B8).withOpacity(0.7),
                       fontSize: screenWidth < 400 ? 14 : 16,
                     ),
                     prefixIcon: Icon(
                       Icons.search,
-                      color: const Color(0xFF64748B),
+                      color: const Color(0xFF94A3B8).withOpacity(0.7),
                       size: screenWidth < 400 ? 20 : 24,
                     ),
                     border: OutlineInputBorder(
@@ -133,14 +138,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
                       borderSide: BorderSide.none,
                     ),
                     filled: true,
-                    fillColor: const Color(0xFFF1F5F9),
+                    fillColor: const Color(0xFF334155),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: screenWidth < 400 ? 12 : 16,
                       vertical: screenWidth < 400 ? 10 : 12,
                     ),
-                  ),
-                  style: TextStyle(
-                    fontSize: screenWidth < 400 ? 14 : 16,
                   ),
                   onChanged: (value) {
                     setState(() {
@@ -159,6 +161,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
               return Container(
                 height: screenWidth < 400 ? 45 : 50,
                 padding: EdgeInsets.symmetric(horizontal: screenWidth < 400 ? 12 : 16),
+                decoration: const BoxDecoration(
+                  color: Color(0xFF1E293B),
+                ),
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: Product.categories.length,
@@ -181,18 +186,18 @@ class _ProductListScreenState extends State<ProductListScreen> {
                             _selectedCategory = category;
                           });
                         },
-                        backgroundColor: Colors.white,
-                        selectedColor: const Color(0xFF2563EB).withOpacity(0.1),
-                        checkmarkColor: const Color(0xFF2563EB),
+                        backgroundColor: const Color(0xFF334155),
+                        selectedColor: const Color(0xFF3B82F6).withOpacity(0.2),
+                        checkmarkColor: const Color(0xFF3B82F6),
                         labelStyle: TextStyle(
-                          color: isSelected ? const Color(0xFF2563EB) : const Color(0xFF64748B),
+                          color: isSelected ? const Color(0xFF3B82F6) : Colors.white,
                           fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                           fontSize: screenWidth < 400 ? 12 : 14,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                           side: BorderSide(
-                            color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0),
+                            color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFF475569),
                           ),
                         ),
                         padding: EdgeInsets.symmetric(
@@ -290,8 +295,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
           ),
             ],
           ),
-        ],
-      ),
     );
   }
 }

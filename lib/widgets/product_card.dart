@@ -115,8 +115,8 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Colors.white,
-                            const Color(0xFFF8FAFC),
+                            const Color(0xFF1E293B),
+                            const Color(0xFF334155),
                           ],
                         ),
                       ),
@@ -207,7 +207,7 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: isSmallCard ? 14 : 16,
-                                    color: const Color(0xFF1E293B),
+                                    color: Colors.white,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -231,10 +231,10 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                                     style: TextStyle(
                                       fontSize: isSmallCard ? 9 : 10,
                                       color: widget.product.category == 'Makanan Utama'
-                                          ? Colors.orange[700]
+                                          ? Colors.orange[300]
                                           : widget.product.category == 'Minuman'
-                                              ? Colors.blue[700]
-                                              : Colors.green[700],
+                                              ? Colors.blue[300]
+                                              : Colors.green[300],
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -246,7 +246,7 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                                     Text(
                                       'Rp ${widget.product.price.toStringAsFixed(0)}',
                                       style: TextStyle(
-                                        color: const Color(0xFF059669),
+                                        color: const Color(0xFF3B82F6),
                                         fontWeight: FontWeight.bold,
                                         fontSize: isSmallCard ? 13 : 14,
                                       ),
@@ -269,10 +269,10 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                                         style: TextStyle(
                                           fontSize: isSmallCard ? 11 : 12,
                                           color: widget.product.stock > 10
-                                              ? Colors.green[700]
+                                              ? Colors.green[300]
                                               : widget.product.stock > 5
-                                                  ? Colors.orange[700]
-                                                  : Colors.red[700],
+                                                  ? Colors.orange[300]
+                                                  : Colors.red[300],
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
@@ -286,14 +286,14 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                       colors: widget.product.stock > 0
-                                          ? [const Color(0xFF2563EB), const Color(0xFF1D4ED8)]
+                                          ? [const Color(0xFFFF6B6B), const Color(0xFFEE5A24)]
                                           : [Colors.grey, Colors.grey[400]!],
                                     ),
                                     borderRadius: BorderRadius.circular(12),
                                     boxShadow: widget.product.stock > 0
                                         ? [
                                             BoxShadow(
-                                              color: const Color(0xFF2563EB).withOpacity(0.3),
+                                              color: const Color(0xFFFF6B6B).withOpacity(0.3),
                                               blurRadius: 8,
                                               offset: const Offset(0, 4),
                                             ),
@@ -308,7 +308,7 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                                             ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(
                                                 content: Text('${widget.product.name} ditambahkan ke keranjang'),
-                                                backgroundColor: const Color(0xFF2563EB),
+                                                backgroundColor: const Color(0xFFFF6B6B),
                                                 duration: const Duration(seconds: 2),
                                                 behavior: SnackBarBehavior.floating,
                                                 shape: RoundedRectangleBorder(
