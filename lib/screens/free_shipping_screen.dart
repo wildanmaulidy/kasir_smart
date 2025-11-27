@@ -276,58 +276,6 @@ class FreeShippingScreen extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
-                      // Price Section
-                      Text(
-                        product.isOnFlashSale
-                            ? currencyFormat.format(product.discountedPrice)
-                            : currencyFormat.format(product.price),
-                        style: const TextStyle(
-                          color: Color(0xFF4ECDC4),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      if (product.isOnFlashSale)
-                        Text(
-                          currencyFormat.format(product.price),
-                          style: TextStyle(
-                            color: Colors.grey[500],
-                            fontSize: 12,
-                            decoration: TextDecoration.lineThrough,
-                          ),
-                        ),
-                      const SizedBox(height: 8),
-                      // Free Shipping Info
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF4ECDC4).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: const Color(0xFF4ECDC4).withOpacity(0.3),
-                          ),
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.local_shipping,
-                              color: Color(0xFF4ECDC4),
-                              size: 12,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              'Gratis Ongkir',
-                              style: TextStyle(
-                                color: Color(0xFF4ECDC4),
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 8),
                       Row(
                         children: [
                           // Add to Cart Button
@@ -350,9 +298,9 @@ class FreeShippingScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              child: const Text(
-                                'Keranjang',
-                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                              child: const Icon(
+                                Icons.shopping_cart,
+                                size: 16,
                               ),
                             ),
                           ),
@@ -381,9 +329,9 @@ class FreeShippingScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              child: const Text(
-                                'Beli Sekarang',
-                                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                              child: const Icon(
+                                Icons.flash_on,
+                                size: 16,
                               ),
                             ),
                           ),

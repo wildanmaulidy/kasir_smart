@@ -19,8 +19,6 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
 
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
-  late AnimationController _bounceController;
-  late Animation<double> _bounceAnimation;
 
   @override
   void initState() {
@@ -39,24 +37,11 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
       curve: Curves.easeInOut,
     ));
 
-    // Bounce animation for button press
-    _bounceController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    _bounceAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.9,
-    ).animate(CurvedAnimation(
-      parent: _bounceController,
-      curve: Curves.elasticOut,
-    ));
   }
 
   @override
   void dispose() {
     _scaleController.dispose();
-    _bounceController.dispose();
     super.dispose();
   }
 
@@ -299,7 +284,7 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                                   children: [
                                     // Add to Cart Button
                                     Expanded(
-                                      child: ElevatedButton.icon(
+                                      child: ElevatedButton(
                                         onPressed: widget.product.stock > 0
                                             ? () {
                                                 context.read<CartProvider>().addToCart(widget.product);
@@ -312,17 +297,10 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                                                 );
                                               }
                                             : null,
-                                        icon: Icon(
+                                        child: Icon(
                                           Icons.shopping_cart,
                                           size: isSmallCard ? 16 : 18,
                                           color: widget.product.stock > 0 ? Colors.white : Colors.grey,
-                                        ),
-                                        label: Text(
-                                          widget.product.stock > 0 ? 'Keranjang' : 'Habis',
-                                          style: TextStyle(
-                                            fontSize: isSmallCard ? 12 : 14,
-                                            color: widget.product.stock > 0 ? Colors.white : Colors.grey,
-                                          ),
                                         ),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: widget.product.stock > 0
@@ -338,7 +316,7 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                                     SizedBox(width: isSmallCard ? 4 : 6),
                                     // Buy Now Button
                                     Expanded(
-                                      child: ElevatedButton.icon(
+                                      child: ElevatedButton(
                                         onPressed: widget.product.stock > 0
                                             ? () {
                                                 // Create temporary cart with just this product
@@ -354,17 +332,10 @@ class _ProductCardState extends State<ProductCard> with TickerProviderStateMixin
                                                 );
                                               }
                                             : null,
-                                        icon: Icon(
+                                        child: Icon(
                                           Icons.flash_on,
                                           size: isSmallCard ? 16 : 18,
                                           color: widget.product.stock > 0 ? Colors.white : Colors.grey,
-                                        ),
-                                        label: Text(
-                                          widget.product.stock > 0 ? 'Beli' : 'Habis',
-                                          style: TextStyle(
-                                            fontSize: isSmallCard ? 12 : 14,
-                                            color: widget.product.stock > 0 ? Colors.white : Colors.grey,
-                                          ),
                                         ),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: widget.product.stock > 0

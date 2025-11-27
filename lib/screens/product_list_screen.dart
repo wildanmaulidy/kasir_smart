@@ -6,7 +6,9 @@ import '../widgets/product_card.dart';
 import 'cart_screen.dart';
 
 class ProductListScreen extends StatefulWidget {
-  const ProductListScreen({super.key});
+  final String? initialSearchQuery;
+
+  const ProductListScreen({super.key, this.initialSearchQuery});
 
   @override
   State<ProductListScreen> createState() => _ProductListScreenState();
@@ -14,8 +16,15 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   String _selectedCategory = 'Semua';
-  String _searchQuery = '';
+  late String _searchQuery;
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _searchQuery = widget.initialSearchQuery ?? '';
+    _searchController.text = _searchQuery;
+  }
 
   @override
   void dispose() {

@@ -91,12 +91,14 @@ class HelpScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // WhatsApp
-                  _buildContactCard(
-                    icon: Icons.message,
-                    title: 'WhatsApp',
-                    subtitle: '+62 812-3456-7890',
-                    color: const Color(0xFF25D366),
-                    onTap: () => _launchWhatsApp(),
+                  Builder(
+                    builder: (context) => _buildContactCard(
+                      icon: Icons.message,
+                      title: 'WhatsApp',
+                      subtitle: '+62 817-5030-077',
+                      color: const Color(0xFF25D366),
+                      onTap: () => _launchWhatsApp(context),
+                    ),
                   ),
 
                   const SizedBox(height: 12),
@@ -402,11 +404,47 @@ class HelpScreen extends StatelessWidget {
     );
   }
 
-  void _launchWhatsApp() async {
-    const phoneNumber = '+6281234567890';
-    final url = 'https://wa.me/$phoneNumber';
-    if (await canLaunch(url)) {
-      await launch(url);
+  void _launchWhatsApp(BuildContext context) async {
+    const phoneNumber = '+628175030077';
+
+    try {
+      // Primary method: Direct WhatsApp app launch
+      final whatsappUrl = 'whatsapp://send?phone=$phoneNumber';
+      if (await canLaunch(whatsappUrl)) {
+        await launch(whatsappUrl);
+        return;
+      }
+
+      // Fallback 1: WhatsApp web URL
+      final webUrl = 'https://wa.me/$phoneNumber';
+      if (await canLaunch(webUrl)) {
+        await launch(webUrl, forceSafariVC: false, forceWebView: false);
+        return;
+      }
+
+      // Fallback 2: Try opening in browser
+      final browserUrl = 'https://api.whatsapp.com/send?phone=$phoneNumber';
+      if (await canLaunch(browserUrl)) {
+        await launch(browserUrl);
+        return;
+      }
+
+      // If all methods fail
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('WhatsApp tidak dapat diakses. Pastikan WhatsApp terinstall.'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal membuka WhatsApp: $e'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
   }
 

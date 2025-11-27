@@ -72,7 +72,7 @@ class _RecommendationWidgetState extends State<RecommendationWidget> {
               ),
               const SizedBox(width: 12),
               const Text(
-                'Menu Rekomendasi AI',
+                'Produk Unggulan',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -83,7 +83,7 @@ class _RecommendationWidgetState extends State<RecommendationWidget> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Produk pilihan berdasarkan AI untuk Anda',
+            'Produk unggulan berdasarkan rekomendasi AI',
             style: TextStyle(
               color: Colors.white.withOpacity(0.8),
               fontSize: 14,
@@ -315,7 +315,7 @@ class _RecommendationWidgetState extends State<RecommendationWidget> {
                       Row(
                         children: [
                           Expanded(
-                            child: ElevatedButton.icon(
+                            child: ElevatedButton(
                               onPressed: product.stock > 0
                                   ? () {
                                       context.read<CartProvider>().addToCart(product);
@@ -328,17 +328,10 @@ class _RecommendationWidgetState extends State<RecommendationWidget> {
                                       );
                                     }
                                   : null,
-                              icon: Icon(
+                              child: Icon(
                                 Icons.shopping_cart,
                                 size: isSmallCard ? 14 : 16,
                                 color: product.stock > 0 ? Colors.white : Colors.grey,
-                              ),
-                              label: Text(
-                                'Keranjang',
-                                style: TextStyle(
-                                  fontSize: isSmallCard ? 11 : 12,
-                                  color: product.stock > 0 ? Colors.white : Colors.grey,
-                                ),
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: product.stock > 0

@@ -357,29 +357,6 @@ class _FlashSaleScreenState extends State<FlashSaleScreen>
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
-                      // Price Section
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            currencyFormat.format(product.discountedPrice),
-                            style: const TextStyle(
-                              color: Color(0xFFFF6B6B),
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            currencyFormat.format(product.price),
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                              fontSize: 12,
-                              decoration: TextDecoration.lineThrough,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
                       Row(
                         children: [
                           // Add to Cart Button
@@ -402,9 +379,9 @@ class _FlashSaleScreenState extends State<FlashSaleScreen>
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              child: const Text(
-                                'Keranjang',
-                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                              child: const Icon(
+                                Icons.shopping_cart,
+                                size: 16,
                               ),
                             ),
                           ),
@@ -433,9 +410,9 @@ class _FlashSaleScreenState extends State<FlashSaleScreen>
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              child: const Text(
-                                'Beli Sekarang',
-                                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                              child: const Icon(
+                                Icons.flash_on,
+                                size: 16,
                               ),
                             ),
                           ),
