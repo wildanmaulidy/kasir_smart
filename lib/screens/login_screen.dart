@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_core/firebase_core.dart';
-import '../firebase_options.dart';
 import '../widgets/animated_background.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -14,27 +12,18 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    clientId: '123456789012-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com',
-  );
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   bool _isLoading = false;
+  bool _isLoginMode = true; // false = register, true = login
   final _formKey = GlobalKey<FormState>();
   String _email = '';
   String _password = '';
-  String _confirmPassword = '';
   String _name = '';
 
   @override
   void initState() {
     super.initState();
-    _initializeFirebase();
-  }
-
-  Future<void> _initializeFirebase() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
   }
 
   Future<void> _signInWithGoogle() async {
@@ -130,6 +119,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  Future<void> _signInWithEmailPassword() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: _email,
+        password: _password,
+      );
+
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Login gagal: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -202,9 +227,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       child: Column(
                         children: [
-                          const Text(
-                            'Daftar Akun Baru',
-                            style: TextStyle(
+                          Text(
+                            _isLoginMode ? 'Masuk' : 'Daftar Akun Baru',
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -214,12 +239,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           const SizedBox(height: 8),
 
                           Text(
-                            'Daftar dengan email dan password atau akun Google',
+                            _isLoginMode ? 'Masuk dengan email dan password atau akun Google' : 'Daftar dengan email dan password atau akun Google',
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.7),
                               fontSize: 14,
                             ),
                             textAlign: TextAlign.center,
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          Center(
+                            child: TextButton(
+                              onPressed: () => setState(() => _isLoginMode = !_isLoginMode),
+                              child: Text(
+                                _isLoginMode ? 'Belum punya akun? Daftar' : 'Sudah punya akun? Masuk',
+                                style: const TextStyle(color: Colors.white70),
+                              ),
+                            ),
                           ),
 
                           const SizedBox(height: 32),
@@ -229,23 +266,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             key: _formKey,
                             child: Column(
                               children: [
-                                // Name Field
-                                TextFormField(
-                                  decoration: const InputDecoration(
-                                    labelText: 'Nama (Opsional)',
-                                    labelStyle: TextStyle(color: Colors.white70),
-                                    prefixIcon: Icon(Icons.person, color: Colors.white70),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.white30),
+                                if (!_isLoginMode) ...[
+                                  // Name Field
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                      labelText: 'Nama (Opsional)',
+                                      labelStyle: TextStyle(color: Colors.white70),
+                                      prefixIcon: Icon(Icons.person, color: Colors.white70),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white30),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: Color(0xFF3B82F6)),
+                                      ),
                                     ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFF3B82F6)),
-                                    ),
+                                    style: const TextStyle(color: Colors.white),
+                                    onChanged: (value) => _name = value,
                                   ),
-                                  style: const TextStyle(color: Colors.white),
-                                  onChanged: (value) => _name = value,
-                                ),
-                                const SizedBox(height: 16),
+                                  const SizedBox(height: 16),
+                                ],
 
                                 // Email Field
                                 TextFormField(
@@ -303,42 +342,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                                 const SizedBox(height: 16),
 
-                                // Confirm Password Field
-                                TextFormField(
-                                  decoration: const InputDecoration(
-                                    labelText: 'Konfirmasi Password',
-                                    labelStyle: TextStyle(color: Colors.white70),
-                                    prefixIcon: Icon(Icons.lock_outline, color: Colors.white70),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.white30),
+                                if (!_isLoginMode) ...[
+                                  // Confirm Password Field
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                      labelText: 'Konfirmasi Password',
+                                      labelStyle: TextStyle(color: Colors.white70),
+                                      prefixIcon: Icon(Icons.lock_outline, color: Colors.white70),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.white30),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: Color(0xFF3B82F6)),
+                                      ),
                                     ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFF3B82F6)),
-                                    ),
+                                    style: const TextStyle(color: Colors.white),
+                                    obscureText: true,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Konfirmasi password tidak boleh kosong';
+                                      }
+                                      if (value != _password) {
+                                        return 'Password tidak cocok';
+                                      }
+                                      return null;
+                                    },
                                   ),
-                                  style: const TextStyle(color: Colors.white),
-                                  obscureText: true,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Konfirmasi password tidak boleh kosong';
-                                    }
-                                    if (value != _password) {
-                                      return 'Password tidak cocok';
-                                    }
-                                    return null;
-                                  },
-                                  onChanged: (value) => _confirmPassword = value,
-                                ),
-                                const SizedBox(height: 24),
+                                  const SizedBox(height: 24),
+                                ],
 
-                                // Register Button
+                                // Register/Login Button
                                 SizedBox(
                                   width: double.infinity,
                                   height: 50,
                                   child: ElevatedButton(
-                                    onPressed: _isLoading ? null : _registerWithEmailPassword,
+                                    onPressed: _isLoading ? null : (_isLoginMode ? _signInWithEmailPassword : _registerWithEmailPassword),
                                     child: Text(
-                                      _isLoading ? 'Sedang Mendaftar...' : 'Daftar',
+                                      _isLoading ? (_isLoginMode ? 'Sedang Masuk...' : 'Sedang Mendaftar...') : (_isLoginMode ? 'Masuk' : 'Daftar'),
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
@@ -414,7 +454,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       },
                                     ),
                               label: Text(
-                                _isLoading ? 'Sedang Mendaftar...' : 'Daftar dengan Google',
+                                _isLoading ? (_isLoginMode ? 'Sedang Masuk...' : 'Sedang Mendaftar...') : (_isLoginMode ? 'Masuk dengan Google' : 'Daftar dengan Google'),
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,

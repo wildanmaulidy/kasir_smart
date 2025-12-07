@@ -39,13 +39,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'your-web-api-key',
-    appId: 'your-web-app-id',
-    messagingSenderId: 'your-sender-id',
-    projectId: 'your-project-id',
-    authDomain: 'your-project-id.firebaseapp.com',
-    storageBucket: 'your-project-id.appspot.com',
-    measurementId: 'your-measurement-id',
+    apiKey: 'AIzaSyChKPd7c-V9WYFXyD6SbXwhopEsWhlky9Q',
+    appId: '1:766113468484:web:b9cdb10c51c35ec54eac11',
+    messagingSenderId: '766113468484',
+    projectId: 'kasir-smart-d11a8',
+    authDomain: 'kasir-smart-d11a8.firebaseapp.com',
+    storageBucket: 'kasir-smart-d11a8.firebasestorage.app',
+    measurementId: 'G-XXXXXXXXXX',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -53,30 +53,34 @@ class DefaultFirebaseOptions {
     appId: '1:766113468484:android:b9cdb10c51c35ec54eac11',
     messagingSenderId: '766113468484',
     projectId: 'kasir-smart-d11a8',
+    authDomain: 'kasir-smart-d11a8.firebaseapp.com',
     storageBucket: 'kasir-smart-d11a8.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'your-ios-api-key',
-    appId: 'your-ios-app-id',
-    messagingSenderId: 'your-sender-id',
-    projectId: 'your-project-id',
-    storageBucket: 'your-project-id.appspot.com',
+    apiKey: 'AIzaSyChKPd7c-V9WYFXyD6SbXwhopEsWhlky9Q',
+    appId: '1:766113468484:ios:b9cdb10c51c35ec54eac11',
+    messagingSenderId: '766113468484',
+    projectId: 'kasir-smart-d11a8',
+    authDomain: 'kasir-smart-d11a8.firebaseapp.com',
+    storageBucket: 'kasir-smart-d11a8.firebasestorage.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'your-macos-api-key',
-    appId: 'your-macos-app-id',
-    messagingSenderId: 'your-sender-id',
-    projectId: 'your-project-id',
-    storageBucket: 'your-project-id.appspot.com',
+    apiKey: 'AIzaSyChKPd7c-V9WYFXyD6SbXwhopEsWhlky9Q',
+    appId: '1:766113468484:macos:b9cdb10c51c35ec54eac11',
+    messagingSenderId: '766113468484',
+    projectId: 'kasir-smart-d11a8',
+    authDomain: 'kasir-smart-d11a8.firebaseapp.com',
+    storageBucket: 'kasir-smart-d11a8.firebasestorage.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'your-windows-api-key',
-    appId: 'your-windows-app-id',
-    messagingSenderId: 'your-sender-id',
-    projectId: 'your-project-id',
-    storageBucket: 'your-project-id.appspot.com',
+    apiKey: 'AIzaSyChKPd7c-V9WYFXyD6SbXwhopEsWhlky9Q',
+    appId: '1:766113468484:windows:b9cdb10c51c35ec54eac11',
+    messagingSenderId: '766113468484',
+    projectId: 'kasir-smart-d11a8',
+    authDomain: 'kasir-smart-d11a8.firebaseapp.com',
+    storageBucket: 'kasir-smart-d11a8.firebasestorage.app',
   );
 }
