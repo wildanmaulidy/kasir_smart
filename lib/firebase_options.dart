@@ -49,11 +49,11 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZ123456',
-    appId: '1:123456789012:android:abcdef1234567890abcdef',
-    messagingSenderId: '123456789012',
-    projectId: 'kasir-smart-app',
-    storageBucket: 'kasir-smart-app.appspot.com',
+    apiKey: 'AIzaSyChKPd7c-V9WYFXyD6SbXwhopEsWhlky9Q',
+    appId: '1:766113468484:android:b9cdb10c51c35ec54eac11',
+    messagingSenderId: '766113468484',
+    projectId: 'kasir-smart-d11a8',
+    storageBucket: 'kasir-smart-d11a8.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(

@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "123456789012",
-    "project_id": "kasir-smart-app",
-    "storage_bucket": "kasir-smart-app.appspot.com"
+    "project_number": "766113468484",
+    "project_id": "kasir-smart-d11a8",
+    "storage_bucket": "kasir-smart-d11a8.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789012:android:abcdef1234567890abcdef",
+        "mobilesdk_app_id": "1:766113468484:android:b9cdb10c51c35ec54eac11",
         "android_client_info": {
           "package_name": "com.example.kasir_smart"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "123456789012-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZ123456"
+          "current_key": "AIzaSyChKPd7c-V9WYFXyD6SbXwhopEsWhlky9Q"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "123456789012-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
